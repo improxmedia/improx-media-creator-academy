@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IMPROX Creator Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== IMPROX MEDIA BRAND TOKENS (from improxmedia.framer.website) ===== */
+:root{
+  --bg:#0A0A0A; --bg2:#121212; --card:#1F1D1D; --line:#33302F;
+  --ink:#FFFFFF; --muted:#A8A8A8; --gold:#01B457; --gold2:#2FE08A; --ok:#01B457;
+  --display:'Unbounded',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);min-height:100vh;
+  background-image:radial-gradient(900px 500px at 85% -10%,#01b45726 0,transparent 60%),radial-gradient(700px 400px at -10% 110%,#01b45714 0,transparent 55%)}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.2;letter-spacing:-.02em}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+.hidden{display:none!important}
+button{font:inherit;cursor:pointer}
+.btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#03140A;border:0;border-radius:30px;padding:13px 26px;font-weight:600;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px #01b45744}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;letter-spacing:.14em;font-size:13px;color:var(--ink)}.logo img{width:34px;height:34px;border-radius:50%;object-fit:cover}.logo span{display:block}.logo b{color:var(--gold);font-weight:600}
+.logo small{display:block;letter-spacing:.3em;color:var(--muted);font:500 9px var(--body);margin-top:3px}
+
+/* Login */
+#login{min-height:100vh;display:grid;place-items:center;padding:16px}
+.gate{width:100%;max-width:420px;background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);border-radius:30px;padding:36px 28px;box-shadow:0 30px 80px #000a}
+.gate h1{font-size:26px;margin:18px 0 6px}
+.gate p{color:var(--muted);font-size:14px;margin-bottom:22px}
+label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+input{width:100%;background:#0A0A0A;border:1px solid var(--line);color:var(--ink);border-radius:30px;padding:13px 14px;font:inherit}
+input:focus{outline:2px solid var(--gold);outline-offset:1px}
+.err{color:#ff8a8a;font-size:13px;min-height:20px;margin-top:10px}
+.gate .btn{width:100%;margin-top:10px}
+.fine{font-size:11px;color:var(--muted);margin-top:18px;text-align:center}
+
+/* Top bar */
+header{position:sticky;top:0;z-index:5;background:#0a0e1acc;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;justify-content:space-between;align-items:center;height:64px}
+.who{font-size:13px;color:var(--muted)}
+
+/* Hero */
+.hero{padding:56px 0 28px}
+.hero h2{font-size:clamp(28px,5vw,48px);max-width:18ch}
+.hero h2 em{color:var(--gold);font-style:normal}
+.hero p{color:var(--muted);max-width:56ch;margin:14px 0 22px}
+.prog{height:8px;background:var(--line);border-radius:99px;overflow:hidden;max-width:420px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .5s}
+.proglbl{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* Modules */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));padding:20px 0 60px}
+.mod{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;cursor:pointer;transition:border-color .2s,transform .2s;text-align:left;color:inherit}
+.mod:hover{border-color:var(--gold);transform:translateY(-3px)}
+.mod .tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.mod h3{font-size:21px;margin:8px 0}
+.mod p{color:var(--muted);font-size:14px}
+.mod .meta{display:flex;justify-content:space-between;margin-top:16px;font-size:12px;color:var(--muted)}
+
+/* Course view */
+#course{padding:28px 0 80px}
+.back{background:none;border:0;color:var(--muted);margin-bottom:14px}
+.layout{display:grid;gap:24px;grid-template-columns:1fr}
+@media(min-width:860px){.layout{grid-template-columns:300px 1fr}}
+.lessons{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:10px;height:fit-content}
+.les{display:flex;gap:10px;align-items:center;width:100%;background:none;border:0;color:var(--ink);text-align:left;padding:12px;border-radius:16px;font-size:14px}
+.les:hover{background:#2a2727}.les.on{background:#01b4572e}
+.dot{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:11px}
+.les.done .dot{background:var(--ok);border-color:var(--ok);color:#06241a}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.video{aspect-ratio:16/9;background:linear-gradient(135deg,#0A0A0A,#0f2a1c);display:grid;place-items:center;text-align:center;padding:0;border-bottom:1px solid var(--line)}
+.video video,.video iframe,.video #ytp{width:100%;height:100%;background:#000;border:0}
+.video .ph{padding:20px;max-width:420px;color:var(--muted);font-size:14px}
+.video .ph b{display:block;font:600 20px var(--display);color:var(--gold);margin-bottom:8px}
+.body{padding:26px}
+.body h3{font-size:24px;margin-bottom:6px}
+.src{font-size:12px;color:var(--gold);letter-spacing:.06em;margin-bottom:16px}
+.body h4{margin:20px 0 6px;color:var(--gold2);font-size:15px}
+.body ul{padding-left:20px;color:#d8d4ca}.body li{margin:5px 0}
+.task{margin-top:22px;background:#0f1a14;border:1px dashed var(--gold);border-radius:20px;padding:16px}
+.task b{color:var(--gold)}
+.body .btn{margin-top:20px}
+
+/* progress + profile */
+.gprog{height:3px;background:var(--line)}
+.gprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .5s}
+.mbar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}
+.mbar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .4s}
+.lhead{padding:12px 12px 6px;font-size:13px;color:var(--muted)}
+.lhead b{color:var(--ink)}
+.profbtn{background:#ffffff0d;border:1px solid var(--line);color:var(--ink);border-radius:30px;padding:8px 14px;font-size:13px;cursor:pointer}
+.profbtn:hover{border-color:var(--gold)}
+.modal{position:fixed;inset:0;background:#000b;display:grid;place-items:center;padding:16px;z-index:20;overflow:auto}
+.mbox{width:100%;max-width:440px;background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);border-radius:30px;padding:28px}
+.mbox h3{font-size:20px;margin-bottom:6px}
+.mbox select{width:100%;background:#0A0A0A;border:1px solid var(--line);color:var(--ink);border-radius:30px;padding:13px 14px;font:inherit}
+.pn{font-size:13px;color:var(--muted);margin:6px 0 4px}
+.chk{display:flex;gap:10px;align-items:flex-start;text-transform:none;letter-spacing:0;font-size:13px;color:var(--ink);margin:16px 0}
+.chk input{width:auto;margin-top:3px}
+.mbox .row{display:flex;gap:10px;flex-wrap:wrap}
+.mbox .btn{width:auto}
+.mbox #p_detect{margin-top:14px}
+</style>
+</head>
+<body>
+
+<!-- ============ ACCESS GATE ============ -->
+<section id="login">
+  <form class="gate" id="gate" autocomplete="off">
+    <div class="logo"><img src="https://framerusercontent.com/images/O5OejJHSbqvYHkOYlH74YeeXY.png?width=160&height=160" alt="" onerror="this.remove()"><span>IMPROX <b>MEDIA</b><small>CREATOR ACADEMY · MEMBERS ONLY</small></span></div>
+    <h1>Executive Access</h1>
+    <p>Private learning portal for the IMPROX team. Enter the pass code and the personal access key issued to you.</p>
+    <label for="pc">Pass code</label><input id="pc" type="password" required>
+    <label for="ak">Access key</label><input id="ak" type="text" placeholder="IMPROX-XXXX-XXXX" required>
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn" type="submit">Enter Academy</button>
+    <div class="fine">Demo credentials — pass code <b>improx</b> · key <b>IMPROX-DEMO-2026</b></div>
+  </form>
+</section>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+  <header><div class="wrap">
+    <div class="logo"><img src="https://framerusercontent.com/images/O5OejJHSbqvYHkOYlH74YeeXY.png?width=160&height=160" alt="" onerror="this.remove()"><span>IMPROX <b>MEDIA</b><small>CREATOR ACADEMY</small></span></div>
+    <div><button class="profbtn" id="who" type="button" title="Your profile"></button> &nbsp; <button class="btn ghost" id="out" style="padding:8px 14px">Sign out</button></div>
+  </div><div class="gprog" aria-hidden="true"><i id="gbar"></i></div></header>
+
+  <main class="wrap" id="home">
+    <div class="hero">
+      <h2>Speak clearly. Tell stories. <em>Create with craft.</em></h2>
+      <p>A private programme in English communication, storytelling and video production — built for the IMPROX MEDIA team.</p>
+      <div class="prog"><i id="bar"></i></div><div class="proglbl" id="lbl"></div>
+      <button class="btn" id="resume" style="margin-top:18px">Start learning</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <main class="wrap hidden" id="course">
+    <button class="back" id="back">← All modules</button>
+    <div class="layout">
+      <nav class="lessons" id="lessons" aria-label="Lessons"></nav>
+      <article class="stage" id="stage"></article>
+    </div>
+  </main>
+</div>
+
+
+<div id="pmodal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="ptitle">
+  <form class="mbox" id="pform" autocomplete="off">
+    <h3 id="ptitle">Your member profile</h3>
+    <p class="pn" id="pnote"></p>
+    <label for="p_name">Name</label><input id="p_name" required maxlength="60">
+    <label for="p_country">Country</label><select id="p_country" required></select>
+    <label for="p_city">City (optional)</label><input id="p_city" maxlength="60">
+    <button type="button" class="btn ghost" id="p_detect">Detect my approximate location</button>
+    <div class="pn" id="p_dnote">Optional. This sends your IP address to ipwho.is to look up an approximate country and city. You can edit the result.</div>
+    <label class="chk"><input type="checkbox" id="p_consent" required><span id="p_consent_t"></span></label>
+    <div class="row"><button class="btn" type="submit">Save profile</button><button type="button" class="btn ghost" id="p_skip">Skip for now</button></div>
+  </form>
+</div>
+<script>
+/* ====== ACCESS CONTROL ======
+   DEMO ONLY: these checks run in the browser, so anyone can read them in the page source.
+   For real privacy, host behind server-side auth (Cloudflare Access, Vercel password protection,
+   or an auth provider) and issue/revoke keys from a database. */
+const REQUIRE_LOGIN = false;   // set to true later to bring back the ID/pass-code gate
+const REPORT_URL = "";          // optional: your own endpoint that receives member profiles (see README). Empty = profiles stay on the member's device
+const PASSCODE = "improx";
+const KEYS = { "IMPROX-DEMO-2026": "Team Member" };   // key -> display name
+
+/* ====== COURSE CONTENT (original, written for IMPROX) ======
+   To add video: set "video" to a file you own or hold a licence for, e.g. "videos/hook.mp4".
+   Frameworks are credited to their originators as ideas; no third-party footage or logos are used. */
+const MODULES = [
+ {id:"m1",tag:"Foundation",title:"Clear English for Creators",blurb:"Speak and write with confidence, rhythm and precision.",
+  lessons:[
+   {t:"The 3 Layers of Clear Speech",src:"Practice method: Pronunciation · Pace · Pause",video:"",
+    pts:["Pronunciation: master stressed syllables — English is stress-timed, so rhythm carries meaning.","Pace: aim for 130–160 words per minute for on-camera delivery.","Pause: a 1-second pause before key ideas makes them land."],
+    task:"Record 60 seconds explaining your last project. Re-record slower, adding three deliberate pauses. Compare."},
+   {t:"Everyday to Professional Register",src:"Business English for creators",video:"",
+    pts:["Replace vague words: 'good' → 'effective', 'stuff' → 'assets', 'fix' → 'resolve'.","Use the 'headline first' pattern: conclusion, reason, example.","Polite directness for client emails: 'Could you confirm by Friday?' beats 'Let me know whenever'."],
+    task:"Rewrite three recent messages using headline-first structure."},
+   {t:"Listening & Shadowing",src:"Language-learning technique (shadowing)",video:"",
+    pts:["Choose a 60-second clip of a speaker you admire.","Repeat each sentence aloud, matching tone and timing.","Review weekly: note 5 new phrases and use them in real work."],
+    task:"Shadow one clip for 10 minutes daily for a week."}]},
+ {id:"m2",tag:"Core Craft",title:"Storytelling Frameworks",blurb:"Structures that professional storytellers use every day.",
+  lessons:[
+   {t:"The Story Circle",src:"Dan Harmon's 8-step Story Circle",video:"",
+    pts:["You → Need → Go → Search → Find → Take → Return → Change.","Works for a 30-second ad and a 30-minute documentary.","Every beat answers: what does the character want, and what is in the way?"],
+    task:"Map your next client video onto the 8 steps on one page."},
+   {t:"The Hero's Journey, Simplified",src:"Joseph Campbell's monomyth, applied to brand stories",video:"",
+    pts:["Make the customer the hero and your brand the guide.","Show the ordinary world, the problem, the guide, the plan, the transformation.","Cut anything that does not move the hero forward."],
+    task:"Rewrite a brand 'About' paragraph with the customer as hero."},
+   {t:"Contrast & Tension",src:"Nancy Duarte's 'what is vs what could be' idea",video:"",
+    pts:["Alternate the current reality with the better future.","Tension keeps attention; resolution rewards it.","Close with a clear call to action."],
+    task:"List five 'what is / what could be' pairs for one product."}]},
+ {id:"m3",tag:"Persuasion",title:"Structured Thinking & Persuasion",blurb:"Make ideas easy to follow and hard to ignore.",
+  lessons:[
+   {t:"Ethos, Pathos, Logos",src:"Aristotle's Rhetoric",video:"",
+    pts:["Ethos: why you can be trusted. Pathos: why it matters emotionally. Logos: why it makes sense.","Strong pitches use all three within the first minute.","Check each script: which appeal is missing?"],
+    task:"Tag every sentence of a pitch with E, P or L. Fill the gaps."},
+   {t:"The Pyramid Principle",src:"Barbara Minto's answer-first structure",video:"",
+    pts:["Lead with the answer, then 2–4 supporting arguments, then evidence.","Group ideas logically so the audience never feels lost.","Ideal for proposals, voice-overs and executive summaries."],
+    task:"Turn a rambling brief into a one-page pyramid."}]},
+ {id:"m4",tag:"Production",title:"Video Making Essentials",blurb:"From hook to final export, the craft of watchable video.",
+  lessons:[
+   {t:"The 3-Second Hook",src:"Short-form video practice",video:"",
+    pts:["Open on the result, a question, or a bold claim.","Match the visual to the first spoken line.","Test three hooks per idea and keep the winner."],
+    task:"Write 5 hooks for one video. Pick one and film it."},
+   {t:"Shot Lists, Light & Sound",src:"Production fundamentals",video:"",
+    pts:["Plan wide, medium, close-up and cutaway for every scene.","Soft key light at 45°, subtle backlight for depth.","Audio first: bad sound loses viewers faster than bad picture."],
+    task:"Shoot a 20-second interview with one light and a lavalier mic."},
+   {t:"Edit Rhythm & Retention",src:"Editing practice",video:"",
+    pts:["Cut on action; vary shot length to control energy.","Pattern-interrupt every 5–8 seconds in short-form.","Captions and sound design lift watch time."],
+    task:"Re-edit an existing video to be 20% shorter without losing meaning."}]},
+ {id:"m5",tag:"On Camera",title:"Presence & Delivery",blurb:"Look natural, sound credible, hold attention.",
+  lessons:[
+   {t:"Voice, Eye-line and Energy",src:"Presentation craft",video:"",
+    pts:["Look just above the lens, smile before you speak.","Raise energy by ~20% versus normal conversation.","Use hand gestures within the frame."],
+    task:"Film three takes with different energy levels and review."}]}
+];
+
+
+/* ====== RESEARCH-BACKED ADDITIONS ======
+   "yt" = official YouTube video id, played with YouTube's embed player (stays on the owner's channel, credit shown).
+   Verified by title/channel. If an owner disables embedding or YouTube is blocked, the lesson shows an in-page message. */
+const byId=id=>MODULES.find(m=>m.id===id);
+byId("m1").lessons.push(
+ {t:"Think Fast, Talk Smart: Use a Structure",src:"Matt Abrahams, Stanford Graduate School of Business",yt:"HAnw168huqA",
+  pts:["Structure is what stops rambling: pick one before you speak.","Three structures to memorise: Problem → Solution → Benefit · What? → So what? → Now what? · Past → Present → Future.","Spontaneous speaking is a skill you can train, not a talent."],
+  task:"Explain your last project three times, once with each structure. Keep the one that sounds clearest."},
+ {t:"Make Your Communication Memorable",src:"Matt Abrahams, Stanford GSB",yt:"Fsr4yrSAIAQ",
+  pts:["Lead with the point your audience should remember.","Use stories, analogies and contrast to make ideas stick.","End on one sentence people can repeat."],
+  task:"Write the one sentence you want a viewer to repeat after your next video."},
+ {t:"Think Faster, Talk Smarter (Full Talk)",src:"Matt Abrahams, Stanford Alumni",yt:"x6TsR3y5Qfg",
+  pts:["Manage anxiety first: slow breath, relaxed shoulders.","Focus on the audience's need, not your performance.","Structure beats perfection."],
+  task:"Pick one idea from this talk and use it in your next recording."});
+
+byId("m2").lessons.push(
+ {t:"Five Stories in Your Pocket",src:"Allison Kluger, Stanford GSB lecturer",yt:"KrLcLkTLkdY",
+  pts:["Keep five reusable stories ready: who you are, why you do this, a failure, a win, a client or audience moment.","A story needs a person, a problem and a change.","Practise telling each in 60 seconds."],
+  task:"Write your five stories as one-line headlines, then tell one aloud."},
+ {t:"Three Stories That Move People",src:"Steve Jobs, Stanford commencement address (2005)",yt:"UF8uR6Z6KLc",
+  pts:["The whole speech is three short stories: connecting the dots, love and loss, and death.","Each story is plain language, concrete detail, and one clear lesson.","Notice how pauses and simple words carry the emotion."],
+  task:"Pick one lesson from your own life and tell it in three beats: moment, struggle, meaning."});
+
+byId("m3").lessons.push(
+ {t:"Memorable Presentations",src:"Simon Hall, University of Cambridge",yt:"QlfSQWeZdCQ",
+  pts:["Build the talk around what the audience should remember, not everything you know.","Shape the content with a clear beginning, middle and end.","Rehearse out loud, not silently."],
+  task:"Cut your next script to the three points the audience must keep."});
+
+MODULES.push(
+ {id:"m6",tag:"Camera Presence",title:"Camera Slay: Look and Sound Natural",blurb:"Why 'natural' feels unnatural, and the habits that fix it.",
+  lessons:[
+   {t:"Why Camera Feels Awkward",src:"Creator research: Reddit r/NewTubers, r/UGCcreators, Quora",
+    pts:["With no live face reacting to you, the brain defaults to self-monitoring, which makes you stiff.","Fix: give the lens a person. Picture one friend and talk to them.","Voice-note method: record as if sending a voice note to a friend, then add the camera back in."],
+    task:"Record three 30-second voice notes to a friend, then repeat each to camera."},
+   {t:"Warm-Up and Reset Routine",src:"Creator-tested habits",
+    pts:["Ramble for 2 minutes on any topic before the real take.","If you go blank, look away from the lens for a second, breathe, then continue; cut the gap in edit.","Film in short chunks (15–30 seconds). Re-takes cost less than perfection."],
+    task:"Do a 2-minute ramble warm-up, then film one 20-second chunk."},
+   {t:"Practical Camera Habits",src:"Alexander Lyon, Communication Coach (non-university)",yt:"HDufd4IUuAA",
+    pts:["Framework beats talent: speak from a simple template.","Keep eye contact at the lens for key lines and glance away between thoughts.","Smile before you start, and raise energy about 20%."],
+    task:"Film a 60-second impromptu answer using one framework from this video."}]},
+ {id:"m7",tag:"Express Clearly",title:"Say It Without Losing Your Thought",blurb:"Capture ideas before filming so nothing gets lost on camera.",
+  lessons:[
+   {t:"The Thought Map (Not a Script)",src:"Synthesis of structure methods + creator practice",
+    pts:["Reading a full script makes you stumble and sound robotic.","Write 3–5 keyword bullets: Hook → Point 1 → Point 2 → Point 3 → Call to action.","Say each bullet in your own words. Keywords prompt you, they don't trap you."],
+    task:"Turn your next script into a 5-bullet thought map and film from it."},
+   {t:"Three Structures for Any Topic",src:"Matt Abrahams' structure approach · Minto's answer-first idea",
+    pts:["Problem → Solution → Benefit: for pitches and tutorials.","What? → So what? → Now what?: for opinions and updates.","Past → Present → Future: for stories and transformations."],
+    task:"Film the same topic with two different structures and compare."},
+   {t:"When You Go Blank",src:"Reddit/Quora creator advice, field-tested",
+    pts:["Don't restart. Pause, look away, breathe, restate the last point in one sentence.","Keep one 'bridge phrase' ready: 'So the key thing is…'","Record the whole idea once, imperfect. Edit later. Perfection comes from the cut."],
+    task:"Intentionally pause 3 times in a take, use your bridge phrase, and review."}]},
+ {id:"m8",tag:"Creator Clinic",title:"Creator Problem Clinic",blurb:"The real problems creators ask online, with direct fixes.",
+  lessons:[
+   {t:"'I don't know what to say'",src:"Quora / Reddit common question",
+    pts:["Answer one question your viewer asked, in one sentence, then give one example.","Use the 3-part rule: Claim → Example → Takeaway.","Collect real questions from comments and DMs as a topic bank."],
+    task:"List 10 viewer questions you could answer this week."},
+   {t:"'I stumble over my words'",src:"Quora / Reddit common question",
+    pts:["Stumbling is normal. Slow down 10% and shorten sentences.","Break the script into one-breath sentences.","Film in chunks, and keep the best take."],
+    task:"Rewrite one paragraph into sentences you can say in one breath."},
+   {t:"'I sound fake'",src:"Quora / Reddit common question",
+    pts:["Talk to one person, not 'the audience'.","Use contractions and everyday words, the way you'd actually speak.","Keep one imperfection in; it reads as human."],
+    task:"Record the same message twice: 'presenting' vs 'telling a friend'. Keep the second style."}]}
+);
+
+
+/* ====== LESSON REWRITES — written from the videos' transcripts (paraphrased, no long quotes) ======
+   Key = original lesson title. Fields override t / src / yt / start / pts / task. */
+const REWRITE={
+ "The 3 Layers of Clear Speech":{t:"Clear Speech: Fillers, Pauses and Landing Phrases",yt:"ZtTUfMHuioA",
+  src:"Matt Abrahams (Stanford GSB) in conversation with Andrew Huberman, Huberman Lab. Long-form, 2h26m: watch selectively",
+  pts:["Filler words are not the enemy. They hold your turn while you think. The goal is to stop them distracting, not to ban them.","Build in pauses instead of reaching for ‘um’. Land each phrase like a gymnast sticking a landing: finish it, breathe in, then start the next.","When you need thinking time, pause and ask the audience a question. Anyone can do it, and it buys you a moment.","Give messages a structure (problem → solution → benefit, or what → so what → now what). Brains remember connected ideas better than lists, and he jokes that bullets kill."],
+  task:"Record a 60-second explanation. Mark every filler, then re-record replacing each one with a pause and a clean breath at the end of each phrase."},
+ "Everyday to Professional Register":{t:"Formal Email English",yt:"QKNgsOqii3Y",
+  src:"Learn English with Cambridge: how to write formal emails (6 min)",
+  pts:["Open with ‘Dear Sir or Madam’ or ‘To whom it may concern’ when you don't know the person, then state why you are writing (‘I am writing to apply for…’).","Drop contractions in formal writing (‘it is clear you are looking for’, not ‘it’s’).","Swap casual phrases: ‘have a look at’ → ‘review’, ‘loads’ → ‘plenty’, ‘I reckon’ → ‘I believe’, ‘so good’ → ‘extremely well suited’.","Replace ‘check out my CV’ with ‘please find my CV attached’, and ‘drop me a message’ with ‘I look forward to hearing from you’.","Close with ‘Kind regards’ or ‘Yours sincerely’, not ‘Cheers’."],
+  task:"Take a real client email you sent and rewrite it with the swaps above. Keep both versions to compare."},
+ "Listening & Shadowing":{t:"Shadowing: Pitch and Rhythm",yt:"5k7Q96UjKVY",
+  src:"Accent's Way English with Hadar: 15-minute shadowing practice (non-university). Uses a TV drama scene, so preview it first",
+  pts:["Shadowing means repeating a speaker, either speaking on top of them or pausing the clip and repeating each line.","Focus on one or two things at a time. This lesson trains pitch (the notes your voice travels across) and rhythm.","Stressed words usually sit higher in pitch, and these patterns are part of prosody, everything about speech beyond the individual sounds.","Connect words the way natives do (‘a guy opens his door’ flows together and the ‘h’ softens)."],
+  task:"Pick a 30-second clip of a speaker you admire. Shadow it line by line for 10 minutes a day this week, focusing only on pitch and rhythm."},
+ "Think Fast, Talk Smart: Use a Structure":{t:"Spontaneous Speaking: Get Out of Your Own Way",yt:"HAnw168huqA",
+  src:"Matt Abrahams, Stanford Graduate School of Business: ‘Think Fast, Talk Smart’ workshop",
+  pts:["Most real communication is spontaneous: introductions, feedback, toasts, questions. The workshop began because Stanford MBA students froze when cold-called.","Step one: get out of your own way. Over-analysing makes you freeze, so practise being ‘dull’ and saying the first thing that comes to mind.","Step two: change how you see the moment, treating it as a conversation rather than a performance.","Use conversational, inclusive language (‘we all need to…’) instead of distancing phrases like ‘one must consider’.","Structure makes ideas easier to process, the way chunking a phone number does. Problem → solution → benefit is one simple structure."],
+  task:"Play the 30-second ‘name things in the room’ game from the talk, then answer a surprise question aloud in under a minute using problem → solution → benefit."},
+ "Make Your Communication Memorable":{yt:"Fsr4yrSAIAQ",
+  src:"Matt Abrahams, Stanford GSB: ‘How to Make Your Communication Memorable’",
+  pts:["Two common worries: I will forget what to say, and my audience will forget what I said.","Prepare like an athlete: eat well, exercise, sleep. He suggests caffeine while preparing but not just before you speak.","Set a goal before you create: what should people know, feel and do?","Structures: problem → solution → benefit (or opportunity → solution → benefit), and his favourite, what → so what → now what.","Make it stick with variety in your voice, evidence and visuals, plus relevance and emotion. Improve through repetition, reflection and feedback."],
+  task:"For your next video, write the ‘know / feel / do’ goal in one line, then outline it as what → so what → now what."},
+ "Think Faster, Talk Smarter (Full Talk)":{yt:"x6TsR3y5Qfg",
+  src:"Matt Abrahams, Stanford Alumni: ‘Think Faster, Talk Smarter’",
+  pts:["He built this method after Stanford's deans reported MBA students struggling to answer cold-call questions.","Manage anxiety first, both its symptoms and its sources, so you can respond in the moment.","‘Maximise mediocrity’: stop aiming to be perfect and say the first thing that comes to mind, as in his improv ‘what's in the box’ exercise.","Messages need structure: rambling and lists are hard to follow, while stories with a beginning, middle and end are easy.","Two go-to structures: problem → solution → benefit, and what → so what → now what."],
+  task:"Ask a friend to give you a random topic. Speak for 60 seconds on it using what → so what → now what."},
+ "The Story Circle":{t:"The Story Circle in Practice: The Dark Knight",yt:"-XGUVkOmPTA",
+  src:"StudioBinder: Dan Harmon Story Circle, 8 steps",
+  pts:["Eight steps: You → Need → Go → Search → Find → Take → Return → Change.","You and Need: establish the character's normal world, then give them an outer and an inner need.","Go and Search: they enter the unfamiliar and meet obstacles. When their first plan works, escalate the problem.","Find and Take: they get what they wanted, but it goes sideways and costs them. Push the cost to something devastating.","Return and Change: back to the start, now different, and the change must be shown visually. Ending where you began makes growth visible."],
+  task:"Map one client video onto the eight steps on a single page, then check that the Need and the Cost are clear."},
+ "The Hero's Journey, Simplified":{t:"The Hero's Journey and the Monomyth",yt:"XevCvCLdKCU",
+  src:"Crash Course World Mythology: Joseph Campbell's monomyth",
+  pts:["Campbell found recurring beats across cultures: a hero leaves safety, travels toward adventure, then comes home changed.","The journey has three parts and 17 sub-steps. Treat it as a roadmap, not a rulebook.","Campbell argued hero stories mirror our own struggle to grow, which is why they resonate.","Use it with care: the video notes his view was narrow on gender and culture, and that real myths (like the Seven Sisters) fit loosely but show the same patterns."],
+  task:"Identify the call, threshold and return in one story from your own life or a client's brand, and note where it doesn't fit."},
+ "Contrast & Tension":{t:"Story Shape: What Is vs. What Could Be",yt:"1nYFpuc2Umk",
+  src:"Nancy Duarte, TEDxEast: the structure of great presentations",
+  pts:["Ideas only change things if they are communicated well, and story is the most effective vehicle.","The audience is the hero. The presenter is the mentor (Yoda, not Luke) who helps them cross into a new idea.","Basic story: a likable hero has a desire, hits a roadblock, and is transformed. Freytag's five-part pyramid adds exposition, rising action, climax, falling action and resolution.","Presentation shape: open by stating what is, set it against what could be, make the gap as wide as you can, then alternate between the two through the middle.","End with a call to action and a vivid picture of the better world. She overlaid this shape on King's ‘I Have a Dream’ and Jobs's 2007 iPhone launch."],
+  task:"List five ‘what is / what could be’ pairs for one product, then order them to alternate and finish with the call to action."},
+ "Five Stories in Your Pocket":{yt:"KrLcLkTLkdY",
+  src:"Allison Kluger, Stanford GSB lecturer: ‘Telling Your Story Can Lead to Success and Opportunity’ (long talk, ~50 min)",
+  pts:["Personal stories build executive presence and personal brand because they show your values, not just your résumé.","Keep about five stories ready that show who you are and how you overcome things. Different moments call for different ones.","Her example: telling a hard personal story in a job interview created an instant bond with the CEO.","Know your audience, then pick the story that fits. Reframing your story helps when you change fields, so lean on your strengths and be open about gaps.","In tense or cross-cultural settings, look for common ground, show empathy and be willing to be vulnerable."],
+  task:"Write your five stories as one-line headlines (origin, setback, win, mentor, pivot). Tell one aloud in 60 seconds."},
+ "Three Stories That Move People":{yt:"UF8uR6Z6KLc",
+  src:"Steve Jobs, Stanford commencement address, 2005 (Stanford University)",
+  pts:["He announces the whole structure up front: ‘three stories’. A clear promise keeps people with you.","Story one, connecting the dots: dropping out and a calligraphy class he took later shaped the Mac's typography.","The stories use plain words and concrete detail (collecting bottle deposits, walking miles for one good meal), not abstractions.","He ends on the third story, mortality, and a simple closing line, ‘Stay hungry. Stay foolish.’ Each story ends with one clear lesson."],
+  task:"Pick one lesson from your life. Tell it in three beats, moment, struggle, meaning, using one concrete detail per beat."},
+ "Ethos, Pathos, Logos":{t:"Rhetoric: The Three Appeals",yt:"3klMM9BkW5o",
+  src:"TED-Ed, Camille A. Langston: ‘How to use rhetoric to get what you want’ (5 min)",
+  pts:["Aristotle defined rhetoric as seeing the available means of persuasion. He described three kinds: forensic (the past), epideictic (the present) and deliberative (the future).","Deliberative rhetoric is the one that drives change, because it paints a possible future and asks the audience to help reach it.","Ethos: show credibility through virtue, practical wisdom or disinterest. Logos: use logic, analogies, examples and evidence. Pathos: appeal to emotion.","Logos can be abused with false facts, and pathos is neither good nor bad, so choose appeals to fit your audience, purpose, time and place."],
+  task:"Tag each sentence of a pitch E, L or P. Find the missing appeal and add it."},
+ "The Pyramid Principle":{t:"The Pyramid Principle: Answer First",yt:"A6Dt3N7DAtQ",
+  src:"Eric, ‘The Analytics Dude’: excerpt from his course ‘Present Like a Management Consultant’ (credits Barbara Minto's book)",
+  pts:["A pyramid has three layers: the main point (or question), the supporting arguments, and the data or logic behind each argument.","A chronological story (exposition → climax → resolution) is engaging but slow to persuade. A pyramid gives the answer first.","His Star Wars example: main question ‘should the rebels attack the Death Star?’, answered with three arguments backed by eight pieces of support.","Consulting decks use this structure because it lets busy readers get the point in seconds."],
+  task:"Turn a rambling client brief into a one-page pyramid: one answer, three arguments, evidence under each."},
+ "Memorable Presentations":{t:"Memorable Presentations (Cambridge)",
+  src:"Simon Hall, University of Cambridge, via the Researcher Development channel: ‘Public Speaking and Presentations’ (45 min)",
+  pts:["Attention spans are short (research is disputed, but he cites roughly ten seconds), so grab people in the first line. His own opening was a question.","Study great openers: a few words that tell you what kind of story this is and make you want more.","Your first and last slides stay up longest, so make them bold, and make the ending echo the beginning and sound final so people know to applaud.","Tell the story with a quick series of developments (setup, rising action, climax). Use analogies, and cut data down to one killer fact.","Less is more: Lincoln's Gettysburg Address was 272 words. Slides can carry words or an image, since people can't read and listen at once.","Stand tall, pace yourself, vary your voice, use silence and questions, then practise and arrive early to test the tech."],
+  task:"Rewrite the first two sentences of your next script as a question or striking statement. End it by echoing them."},
+ "The 3-Second Hook":{t:"Speech Hooks in the First 60 Seconds",yt:"wYqIszEQ1do",
+  src:"DrivenBy... Co. (Deonna Marie Filisetti): speech hooks (5 min)",
+  pts:["Audiences judge you within the first minute, so a hook is a deliberate opening to spark curiosity.","Nine hook types: shocking statistic, question, short story, quote, bold or contrarian statement, ‘what if’ scenario, relatable problem, unexpected action, and a prop or visual.","Pick the hook that fits your message, audience and style. Once you have curiosity, your job is to keep it.","IMPROX note: for short-form video, compress the hook into your first line."],
+  task:"Write three hooks for one video using three different types. Pick one and film it."},
+ "Shot Lists, Light & Sound":{t:"Lighting: Key, Fill, Back and Accent",yt:"Fyla8KFX2qQ",
+  src:"Blake Ridder: cinematic lighting explained (4.5 min)",
+  pts:["Key light: placed to one side, slightly above eye level, diffused with a softbox so it doesn't look harsh. Not every light has to be soft, though.","Fill light: opposite side and very dim (he sets it near 1%), also soft, repositioned if it throws a shadow behind you.","Backlight: high behind you angled down (about 15°), without a diffuser, set slightly cooler to separate you from the background.","Accent light: a small patch of light that hints where the story goes next.","Lighting serves the story, so experiment with angle, intensity and mood. IMPROX note: plan your shot list and record clean audio before lighting."],
+  task:"Light a 20-second interview with a key and a fill only. Then add the backlight and compare."},
+ "Edit Rhythm & Retention":{t:"Editing: What to Show, When to Cut",yt:"FVR8zz8ci2k",
+  src:"StudioBinder: 6 ways to edit any scene (Shot List, ep. 10)",
+  pts:["Every edit is three choices: what to show, when to cut, and what to cut to. Walter Murch's Rule of Six helps prioritise them.","Pace sets emotion: hold shots longer for mournful scenes, cut quickly for frantic action.","Eyeline match: cut to what a character is looking at. Shot / reverse shot and inserts follow the same logic.","Cross-cutting weaves scenes in different places. Eye trace keeps the viewer's eyes in the same part of the frame across cuts.","Also covered: split edits (J and L cuts), intellectual montage, and cutting on action for a smooth flow."],
+  task:"Re-edit a talking-head video using two cutaways and one cut on action. Make it 20% shorter without losing meaning."},
+ "Voice, Eye-line and Energy":{t:"Voice: Habits, Values and Toolbox",yt:"eIho2S0ZahI",
+  src:"Julian Treasure, TED: ‘How to Speak So That People Want to Listen’ (~10 min)",
+  pts:["Seven habits that make people stop listening: gossip, judging, negativity, complaining, excuses, exaggeration and dogmatism (mixing opinion with fact).","Build on HAIL: Honesty, Authenticity, Integrity and Love (wishing people well).","Your vocal toolbox: register (chest voice carries weight), timbre, prosody (avoid monotone and constant upward ‘question’ endings), pace and silence, pitch and volume.","Warm up first: sigh, lip trills, ‘la la la’, rolled R and the ‘we-aw’ siren."],
+  task:"Do the six warm-ups before your next recording. Then record one line three ways: low and slow, high and fast, and quiet."},
+ "Why Camera Feels Awkward":{t:"Shy Is Practised, Not Fixed",yt:"vb8WJgRAKUU",
+  src:"Vinh Giang: ‘You're Naturally Shy… So Here's How to Actually Be Confident’",
+  pts:["Shyness isn't a personality. It is a set of behaviours you've practised for years, so confidence comes from practising different behaviours.","Shy visual behaviours: weak eye contact, collapsed posture, hands clasped and few gestures.","Shy vocal behaviours: low default volume (about a 3 out of 10), mumbling and a monotone. Verbal: rambling with no clear point, or not speaking up.","Confident versions: deliberate eye contact, feet shoulder-width apart with shoulders down and back, bigger gestures, clear volume and articulation, and a point.","He says his students saw changes in days. Film yourself and look for the shy behaviours."],
+  task:"Film yourself for 60 seconds, list the shy behaviours you see, then re-film replacing two of them with the confident version."},
+ "Warm-Up and Reset Routine":{t:"Talk to One Person, in Your Own Words",yt:"f6vlu52tUOY",
+  src:"Jun Yuh: how to speak well on camera (39 min, non-university)",
+  pts:["Speak to one specific person, not ‘the audience’ or ‘hey guys’. It makes viewers feel understood.","Use your own words: ramble the idea aloud or dictate it, then shape what sounds natural to you.","Work on tone, rhythm, strategic pauses and confidence so it feels like a private conversation.","Record one line at a time: keep the script to one side, memorise one line, look at the lens, say it, then cut. It protects you from forgetting.","You don't need a new personality, and starting awkward is normal. He shows his own first attempts."],
+  task:"Pick one viewer by name. Write your next script in your own words, then record it one line at a time."},
+ "Practical Camera Habits":{t:"Impromptu Speech Framework",yt:"HDufd4IUuAA",
+  src:"Alexander Lyon, Communication Coach: ‘How To Give An Impromptu Speech’ (non-university)",
+  pts:["Impromptu speaking is a learnable skill. The secret is to speak from a mental framework.","Introduction (about 30 seconds): attention grabber, your central message, then a preview such as ‘three reasons’.","Body: three points, each signposted with ‘first, second, third’ and supported by a short story or example. Pick your three points as soon as you hear the question.","Conclusion: say ‘in closing’, restate the message, recap the three points, then call back your opening line and stop talking.","Practise with a two-minute speech on a random prompt."],
+  task:"Give a two-minute impromptu speech on a random prompt using the intro / body / conclusion template."},
+ "The Thought Map (Not a Script)":{
+  src:"IMPROX synthesis, using Jun Yuh's ‘one line at a time’ and Abrahams' structure ideas",
+  task:"Turn your next script into a 5-bullet thought map and film it one idea at a time."},
+ "Three Structures for Any Topic":{t:"Two Structures from Stanford",yt:"HAnw168huqA",start:2329,
+  src:"Matt Abrahams, Stanford GSB (starts at 38:49). Also taught in his ‘Make Your Communication Memorable’ talk",
+  pts:["Problem → Solution → Benefit: name the issue, offer the fix, finish with what the listener gains. Persuasive and easy to remember.","What → So what → Now what: state your idea or position, explain why it matters to these people, then give the next steps.","The second one works for presentations, meeting agendas, emails, feedback and answering questions.","Structure helps your audience follow where you're going and keeps them with you at transitions."],
+  task:"Film the same topic twice, once with each structure, and keep the one that sounds clearer."},
+ "When You Go Blank":{
+  src:"Abrahams (pause and ‘land’ phrases) plus Jun Yuh (one line at a time), with Reddit/Quora creator tips",
+  task:"Pause deliberately three times in a take, use your bridge phrase, and review."}
+};
+MODULES.forEach(m=>m.lessons.forEach(l=>{const r=REWRITE[l.t]; if(r) Object.assign(l,r);}));
+
+/* ====== STATE ====== */
+const $=id=>document.getElementById(id);
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let done=store.get("improx_done")||{}, cur=null, curL=0;
+
+
+/* ====== MEMBER PROFILE (consent-based) ======
+   Members enter or confirm their own country/city. The optional "detect" button looks up an approximate
+   location from their IP via ipwho.is, only when they press it. Nothing is collected silently. */
+const CODES="AF AL DZ AD AO AR AM AU AT AZ BS BH BD BB BY BE BZ BJ BT BO BA BW BR BN BG BF BI KH CM CA CV CF TD CL CN CO KM CG CD CR CI HR CU CY CZ DK DJ DM DO EC EG SV GQ ER EE SZ ET FJ FI FR GA GM GE DE GH GR GD GT GN GW GY HT HN HK HU IS IN ID IR IQ IE IL IT JM JP JO KZ KE KI XK KW KG LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MR MU MX FM MD MC MN ME MA MZ MM NA NR NP NL NZ NI NE NG KP MK NO OM PK PW PS PA PG PY PE PH PL PT PR QA RO RU RW WS SM ST SA SN RS SC SL SG SK SI SB SO ZA KR SS ES LK SD SR SE CH SY TW TJ TZ TH TL TG TO TT TN TR TM TV UG UA AE GB US UY UZ VU VA VE VN YE ZM ZW".split(" ");
+let regionNames; try{regionNames=new Intl.DisplayNames(["en"],{type:"region"});}catch(e){regionNames=null;}
+const cName=c=>{try{return (regionNames&&regionNames.of(c))||c;}catch(e){return c;}};
+const flag=c=>c&&c.length===2?String.fromCodePoint(...[...c.toUpperCase()].map(x=>127397+x.charCodeAt(0))):"🌍";
+let profile=store.get("improx_profile")||null, skipped=false;
+let detected=false, detectedTz="";
+
+function renderProf(){
+  const el=$("who"); if(!el) return;
+  el.textContent=profile?(flag(profile.countryCode)+" "+profile.name+(profile.country?" · "+profile.country:"")):"Add your profile";
+}
+function openProf(){
+  const sel=$("p_country");
+  if(!sel.options.length){
+    sel.innerHTML='<option value="">Select your country</option>'+CODES.map(c=>[c,cName(c)]).sort((a,b)=>a[1].localeCompare(b[1])).map(x=>`<option value="${x[0]}">${x[1]}</option>`).join("");
+  }
+  $("p_name").value=profile?profile.name:"";
+  sel.value=profile?profile.countryCode:"";
+  $("p_city").value=profile?(profile.city||""):"";
+  $("p_consent").checked=false;
+  $("pnote").textContent=REPORT_URL?"Your name, country, city and progress are shared with IMPROX MEDIA admins so they know where the team is learning from.":"Your profile is saved on this device only. Team-wide sharing is switched off.";
+  $("p_consent_t").textContent=REPORT_URL?"I agree to share this profile with IMPROX MEDIA admins.":"I agree to save this profile on this device.";
+  $("pmodal").classList.remove("hidden"); $("p_name").focus();
+}
+function closeProf(){ $("pmodal").classList.add("hidden"); }
+async function detectLoc(){
+  const b=$("p_detect"), n=$("p_dnote");
+  b.disabled=true; b.textContent="Detecting…";
+  try{
+    const r=await fetch("https://ipwho.is/"); const j=await r.json();
+    if(!j||!j.success) throw new Error("fail");
+    $("p_country").value=j.country_code; $("p_city").value=j.city||"";
+    detected=true; detectedTz=(j.timezone&&j.timezone.id)||"";
+    n.textContent="Found: "+(j.city?j.city+", ":"")+j.country+". Edit it if it isn’t right.";
+  }catch(e){ n.textContent="Couldn’t detect automatically. Please choose your country from the list."; }
+  b.disabled=false; b.textContent="Detect my approximate location";
+}
+function saveProf(e){
+  e.preventDefault();
+  const code=$("p_country").value; if(!code||!$("p_consent").checked) return;
+  let tz=detectedTz; if(!tz){try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"";}catch(x){tz="";}}
+  profile={name:$("p_name").value.trim(),countryCode:code,country:cName(code),city:$("p_city").value.trim(),tz:tz,detected:detected,consentAt:new Date().toISOString()};
+  store.set("improx_profile",profile); renderProf(); closeProf(); report("profile");
+}
+function report(kind){
+  if(!REPORT_URL||!profile) return;
+  const n=Object.keys(done).length;
+  try{ fetch(REPORT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({kind:kind,profile:profile,lessonsDone:n,lessonsTotal:total(),at:new Date().toISOString()})}).catch(()=>{}); }catch(e){}
+}
+function initProfile(){
+  renderProf();
+  $("who").onclick=openProf; $("p_detect").onclick=detectLoc; $("pform").onsubmit=saveProf;
+  $("p_skip").onclick=()=>{skipped=true;closeProf();};
+  if(!profile) openProf();
+}
+
+/* ====== LOGIN ====== */
+$("gate").addEventListener("submit",e=>{
+  e.preventDefault();
+  const k=$("ak").value.trim().toUpperCase(), p=$("pc").value;
+  if(p===PASSCODE && KEYS[k]){ try{sessionStorage.setItem("improx_user",KEYS[k])}catch(e){} start(KEYS[k]); }
+  else $("err").textContent="Pass code or access key not recognised.";
+});
+$("out").onclick=()=>{try{sessionStorage.removeItem("improx_user")}catch(e){} location.reload()};
+function start(name){ $("login").classList.add("hidden"); $("app").classList.remove("hidden"); renderHome(); initProfile(); }
+
+
+/* ====== RENDER ====== */
+const total=()=>MODULES.reduce((a,m)=>a+m.lessons.length,0);
+function updateProgress(){
+  const n=Object.keys(done).length, pct=Math.round(n/total()*100);
+  $("bar").style.width=pct+"%"; $("gbar").style.width=pct+"%";
+  $("lbl").textContent=n+" of "+total()+" lessons complete · "+pct+"%";
+  const last=store.get("improx_last");
+  $("resume").textContent=n>=total()?"Review the course":(last?"Continue where you left off":"Start learning");
+  $("resume").onclick=()=>{ const t=last&&MODULES.find(m=>m.id===last.m); if(t){openMod(t.id);curL=Math.min(last.l||0,t.lessons.length-1);renderCourse();} else openMod(MODULES[0].id); };
+}
+function renderHome(){
+  $("home").classList.remove("hidden"); $("course").classList.add("hidden");
+  $("grid").innerHTML=MODULES.map(m=>{
+    const d=m.lessons.filter((_,i)=>done[m.id+i]).length;
+    return `<button class="mod" data-id="${m.id}"><div class="tag">${m.tag}</div><h3>${m.title}</h3><p>${m.blurb}</p>
+      <div class="mbar"><i style="width:${Math.round(d/m.lessons.length*100)}%"></i></div>
+      <div class="meta"><span>${m.lessons.length} lessons</span><span>${d}/${m.lessons.length} done</span></div></button>`}).join("");
+  document.querySelectorAll(".mod").forEach(b=>b.onclick=()=>openMod(b.dataset.id));
+  updateProgress(); scrollTo(0,0);
+}
+function openMod(id){ cur=MODULES.find(m=>m.id===id); curL=0; $("home").classList.add("hidden"); $("course").classList.remove("hidden"); renderCourse(); scrollTo(0,0); }
+$("back").onclick=renderHome;
+/* ====== VIDEO PLAYER ======
+   Uses YouTube's IFrame API on the privacy-enhanced domain. If the API can't load (network blocks YouTube)
+   or the owner disabled embedding, the lesson shows a short in-page message and the notes below still teach it.
+   Self-hosted files (l.video, your own or licensed footage) always take priority and need no YouTube access. */
+let ytLoad=null;
+function loadYT(){
+  if(ytLoad) return ytLoad;
+  ytLoad=new Promise((res,rej)=>{
+    if(window.YT&&YT.Player) return res();
+    const t=setTimeout(()=>rej(new Error("timeout")),15000);
+    window.onYouTubeIframeAPIReady=()=>{clearTimeout(t);res();};
+    const sc=document.createElement("script"); sc.src="https://www.youtube.com/iframe_api"; sc.async=true;
+    sc.onerror=()=>{clearTimeout(t);rej(new Error("blocked"));};
+    document.head.appendChild(sc);
+  });
+  ytLoad.catch(()=>{ytLoad=null;});
+  return ytLoad;
+}
+function mountPlayer(l){
+  const wrap=$("ytwrap"); if(!wrap) return;
+  const fail=()=>{ if($("ytwrap")===wrap) wrap.innerHTML='<div class="ph"><b>Video unavailable here</b>This video can’t be played on your current network or device. The key ideas and practice task below cover this lesson.</div>'; };
+  wrap.innerHTML='<div class="ph">Loading video…</div>';
+  loadYT().then(()=>{
+    if($("ytwrap")!==wrap) return;
+    wrap.innerHTML='<div id="ytp"></div>';
+    new YT.Player("ytp",{host:"https://www.youtube-nocookie.com",videoId:l.yt,width:"100%",height:"100%",
+      playerVars:{rel:0,modestbranding:1,playsinline:1,start:l.start||0},
+      events:{onError:fail}});
+  }).catch(fail);
+}
+function lessonHead(){
+  const d=cur.lessons.filter((_,i)=>done[cur.id+i]).length, pc=Math.round(d/cur.lessons.length*100);
+  return `<div class="lhead"><b>${d}/${cur.lessons.length}</b> lessons complete · ${pc}%<div class="mbar"><i style="width:${pc}%"></i></div></div>`;
+}
+function renderCourse(){
+  store.set("improx_last",{m:cur.id,l:curL});
+  $("lessons").innerHTML=lessonHead()+cur.lessons.map((l,i)=>`<button class="les ${i===curL?"on":""} ${done[cur.id+i]?"done":""}" data-i="${i}">
+    <span class="dot">${done[cur.id+i]?"✓":i+1}</span><span>${l.t}</span></button>`).join("");
+  document.querySelectorAll(".les").forEach(b=>b.onclick=()=>{curL=+b.dataset.i;renderCourse()});
+  const l=cur.lessons[curL], isDone=!!done[cur.id+curL];
+  const vid=l.video?`<video controls controlsList="nodownload" playsinline preload="metadata" src="${l.video}"></video>`
+    :l.yt?`<div id="ytwrap" style="width:100%;height:100%"><div id="ytp"></div></div>`
+    :`<div class="ph"><b>Video slot</b>Upload your own or licensed footage to <code>${"videos/"+cur.id+"-"+(curL+1)+".mp4"}</code> and set it in this lesson.</div>`;
+  $("stage").innerHTML=`<div class="video">${vid}</div><div class="body">
+    <h3>${l.t}</h3><div class="src">${l.src}</div><h4>Key ideas</h4><ul>${l.pts.map(p=>`<li>${p}</li>`).join("")}</ul>
+    <div class="task"><b>Practice task.</b> ${l.task}</div>
+    <button class="btn" id="mark">${isDone?"Completed ✓ (tap to undo)":"Mark complete"}</button>${curL<cur.lessons.length-1?'<button class="btn ghost" id="next" style="margin-left:10px">Next lesson →</button>':''}</div>`;
+  if($("next")) $("next").onclick=()=>{curL++;renderCourse();scrollTo(0,0);};
+  if(!l.video&&l.yt) mountPlayer(l);
+  $("mark").onclick=()=>{ const k=cur.id+curL; if(done[k]) delete done[k]; else done[k]=1; store.set("improx_done",done); renderCourse(); updateProgress(); report("progress"); };
+}
+
+/* ====== BOOT (must run after everything above is defined) ====== */
+try{const u=sessionStorage.getItem("improx_user"); if(u) start(u);}catch(e){}
+if(!REQUIRE_LOGIN) start("Team Member");
+</script>
+</body>
+</html>
